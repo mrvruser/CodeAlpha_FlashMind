@@ -14,20 +14,40 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: FlashcardQuiz(),
+      home: HomePage(),
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  const HomePage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Flashcard Quiz')),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => FlashcardQuiz()),
+            );
+          },
+          child: const Text('Play'),
+        ),
+      ),
     );
   }
 }
 
 class FlashcardQuiz extends StatefulWidget {
-  const FlashcardQuiz({Key? key}) : super(key: key);
-
   @override
   _FlashcardQuizState createState() => _FlashcardQuizState();
 }
 
 class _FlashcardQuizState extends State<FlashcardQuiz> {
-  final List<Flashcard> _flashcards = [
+  List<Flashcard> _flashcards = [
     Flashcard(
         question: "Which IDE is commonly used to develop Flutter apps?",
         answer: "Android Studio"),
@@ -68,7 +88,7 @@ class _FlashcardQuizState extends State<FlashcardQuiz> {
   }
 
   void startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
         if (_timeRemaining > 0) {
           _timeRemaining--;
@@ -127,6 +147,12 @@ class _FlashcardQuizState extends State<FlashcardQuiz> {
                   back: FlashcardView(text: _flashcards[_currIndex].answer),
                 ),
               ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () => checkAnswer(_flashcards[_currIndex].answer),
+                child: Text(_flashcards[_currIndex].answer),
+              ),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -152,12 +178,6 @@ class _FlashcardQuizState extends State<FlashcardQuiz> {
               const SizedBox(height: 20),
               Text('Time Remaining: $_timeRemaining seconds',
                   style: const TextStyle(fontSize: 18)),
-              const SizedBox(height: 20),
-              for (var flashcard in _flashcards)
-                ElevatedButton(
-                  onPressed: () => checkAnswer(flashcard.answer),
-                  child: Text(flashcard.answer),
-                ),
             ],
           ),
         ),
